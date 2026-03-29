@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A Final Answer</title>
+
+<style>
+body {
+    background-color: #0b0b0b;
+    color: #fff;
+    font-family: Georgia, serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    overflow: hidden;
+}
+
+.box {
+    max-width: 600px;
+}
+
+input {
+    padding: 10px;
+    margin-top: 10px;
+    width: 70%;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.hidden {
+    display: none;
+}
+
+.fade {
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+.show {
+    opacity: 1;
+}
+
+#countdown {
+    font-size: 28px;
+    margin: 20px 0;
+}
+
+#hearts {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div id="lock">
+        <h2>One last step…</h2>
+        <p>The answers brought you here.<br>Now combine them into one truth.</p>
+        <input type="text" id="password" placeholder="Enter the final answer">
+        <br>
+        <button onclick="check()">Unlock</button>
+        <p id="error"></p>
+    </div>
+
+    <div id="content" class="hidden fade">
+
+        <h2>Oliwafeyisikemi…</h2>
+
+        <p>
+            You followed every clue,<br>
+            You saw every hidden piece…<br><br>
+            And through it all,<br>
+            it was always you.
+        </p>
+
+        <div id="countdown">3</div>
+
+        <div id="question" class="hidden">
+            <p>
+                ❤️ Will you be my girlfriend? ❤️
+            </p>
+
+            <button onclick="yes()">Yes ❤️</button>
+            <button id="noBtn" onmouseover="moveNo()">No 😅</button>
+
+            <p id="response"></p>
+        </div>
+    </div>
+
+</div>
+
+<canvas id="hearts"></canvas>
+
+<script>
+function check() {
+    let input = document.getElementById("password").value.toLowerCase().trim();
+
+    if (input.includes("feelings") && input.includes("you")) {
+        document.getElementById("lock").classList.add("hidden");
+        let content = document.getElementById("content");
+        content.classList.remove("hidden");
+
+        setTimeout(() => content.classList.add("show"), 100);
+
+        startCountdown();
+    } else {
+        document.getElementById("error").innerText = "That’s not what your heart knows… try again.";
+    }
+}
+
+function startCountdown() {
+    let count = 3;
+    let el = document.getElementById("countdown");
+
+    let interval = setInterval(() => {
+        count--;
+        el.innerText = count;
+
+        if (count === 0) {
+            clearInterval(interval);
+            el.style.display = "none";
+            document.getElementById("question").classList.remove("hidden");
+        }
+    }, 1000);
+}
+
+function moveNo() {
+    let btn = document.getElementById("noBtn");
+
+    let x = Math.random() * (window.innerWidth - 100);
+    let y = Math.random() * (window.innerHeight - 50);
+
+    btn.style.position = "absolute";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+}
+
+function yes() {
+    document.getElementById("response").innerHTML = 
+        "You just made me the happiest person alive ❤️";
+
+    launchHearts();
+}
+
+function launchHearts() {
+    const canvas = document.getElementById("hearts");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let hearts = [];
+
+    for (let i = 0; i < 50; i++) {
+        hearts.push({
+            x: Math.random() * canvas.width,
+            y: canvas.height + Math.random() * 200,
+            size: Math.random() * 20 + 10,
+            speed: Math.random() * 2 + 1
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "red";
+
+        hearts.forEach(h => {
+            ctx.beginPath();
+            ctx.moveTo(h.x, h.y);
+            ctx.arc(h.x - h.size/4, h.y, h.size/4, 0, Math.PI * 2);
+            ctx.arc(h.x + h.size/4, h.y, h.size/4, 0, Math.PI * 2);
+            ctx.lineTo(h.x, h.y + h.size);
+            ctx.fill();
+
+            h.y -= h.speed;
+        });
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}
+</script>
+
+</body>
+</html>
